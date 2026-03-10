@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #38bdf8; --success: #4ade80; --bg: #0f172a; }
+        body { margin: 0; background: radial-gradient(circle at top right, #1e293b, #0f172a); color: white; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .dashboard { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 2.5rem; border-radius: 24px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); width: 90%; max-width: 450px; }
+        h2 { text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.8rem; color: var(--primary); margin-bottom: 0.5rem; }
+        #timer { font-family: 'JetBrains Mono', monospace; font-size: 3rem; font-weight: 900; margin-bottom: 2rem; text-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+        .money-box { background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 16px; margin-bottom: 1rem; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .label { font-size: 0.75rem; opacity: 0.6; margin-bottom: 0.2rem; text-transform: uppercase; }
+        #total-money { font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 1rem; }
+        .share-box { border-top: 1px solid rgba(255, 255, 255, 0.1); pt: 1rem; padding-top: 1rem; }
+        #student-money { font-size: 2rem; font-weight: 700; color: var(--success); }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <h2 id="status-text">Countdown</h2>
+        <div id="timer">00:00:00:00</div>
+
+        <div class="money-box">
+            <div class="label">Total Money Collected</div>
+            <div id="total-money">$0</div>
+            
+            <div class="share-box">
+                <div class="label">Student Recipient (50%)</div>
+                <div id="student-money">$0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- EDIT THIS NUMBER TO UPDATE THE WHOLE SITE ---
+        const currentMoney = 0; 
+        // ------------------------------------------------
+        
+        const startTimestamp = new Date("March 16, 2026 00:00:00").getTime();
+        const endTimestamp = new Date("March 20, 2026 00:00:00").getTime();
+
+        function update() {
+            const now = new Date().getTime();
+            let target;
+            let label;
+
+            if (now < startTimestamp) {
+                label = "Event Starts In";
+                target = startTimestamp;
+            } else if (now < endTimestamp) {
+                label = "Event Ends In";
+                target = endTimestamp;
+                document.getElementById('timer').style.color = "#4ade80";
+            } else {
+                document.getElementById('status-text').innerText = "Event Complete";
+                document.getElementById('timer').innerText = "00:00:00";
+                return;
+            }
+
+            const diff = target - now;
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            const format = (n) => n.toString().padStart(2, '0');
+
+            // Math for the 50% student share
+            const studentShare = currentMoney * 0.5;
+
+            document.getElementById('status-text').innerText = label;
+            document.getElementById('timer').innerText = `${d}d ${format(h)}h ${format(m)}m ${format(s)}s`;
+            
+            // Updates both numbers automatically
+            document.getElementById('total-money').innerText = `$${currentMoney.toLocaleString()}`;
+            document.getElementById('student-money').innerText = `$${studentShare.toLocaleString()}`;
+        }
+
+        setInterval(update, 1000);
+        update();
+    </script>
+</body>
+</html>
