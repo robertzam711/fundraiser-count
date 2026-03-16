@@ -152,7 +152,7 @@
     <div class="container">
         <div class="live-indicator">
             <div class="pulse" id="dot"></div>
-            <span id="status-label">SYSTEM READY</span>
+            <span id="status-label">LIVE: RAFFLE CLOSING</span>
         </div>
 
         <h1>Humble Design Fundraiser</h1>
@@ -185,26 +185,20 @@
 
     <script>
         // --- CONFIGURATION ---
-        const currentMoney = 285; // THE ONLY NUMBER YOU NEED TO CHANGE
-        const targetDate = new Date("March 16, 2026 00:00:00").getTime();
-        const endDate = new Date("March 20, 2026 23:59:59").getTime();
+        const currentMoney = 285; 
+        
+        // Target: March 20, 2026 at 2:25 PM (14:25)
+        const endDate = new Date("2026-03-20T14:25:00").getTime();
 
         function update() {
             const now = new Date().getTime();
-            let distance;
-            let label;
+            const distance = endDate - now;
 
-            if (now < targetDate) {
-                distance = targetDate - now;
-                label = "COUNTDOWN TO START";
-                document.getElementById('dot').style.background = "#38bdf8";
-            } else if (now < endDate) {
-                distance = endDate - now;
-                label = "LIVE: RAFFLE CLOSING";
-                document.getElementById('dot').style.background = "#ef4444";
-            } else {
+            if (distance < 0) {
                 document.getElementById('status-label').innerText = "EVENT CLOSED";
-                document.getElementById('timer').innerText = "00:00:00";
+                document.getElementById('timer').innerText = "00:00:00:00";
+                document.getElementById('dot').style.background = "#ef4444";
+                document.getElementById('dot').style.animation = "none";
                 return;
             }
 
@@ -215,8 +209,7 @@
 
             const pad = (n) => n.toString().padStart(2, '0');
 
-            document.getElementById('status-label').innerText = label;
-            document.getElementById('timer').innerText = `${d}:${pad(h)}:${pad(m)}:${pad(s)}`;
+            document.getElementById('timer').innerText = `${pad(d)}:${pad(h)}:${pad(m)}:${pad(s)}`;
             
             // MATH ENGINE
             document.getElementById('total-val').innerText = `$${currentMoney.toLocaleString()}`;
